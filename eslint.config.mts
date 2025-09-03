@@ -6,6 +6,10 @@ import { defineConfig, globalIgnores } from "eslint/config";
 export default defineConfig([
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+    rules: {
+      "camelcase": "off",
+      "no-useless-constructor": "off"
+    },
     plugins: { js },
     extends: ["js/recommended"],
     languageOptions: { globals: globals.browser }
@@ -16,5 +20,5 @@ export default defineConfig([
     "node_modules/**/*",
     "eslint.config.mts",
     "yarn-error.log",
-	]),
+	])
 ]);
