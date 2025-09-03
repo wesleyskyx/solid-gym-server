@@ -1,4 +1,5 @@
 import { PrismaUsersRepository } from "@/repositories/prisma/prisma-users-repository";
+import { EmailAlreadyRegisteredError } from "@/use-cases/errors/email-already-registered-error";
 import { RegisterUseCase } from "@/use-cases/register";
 import { FastifyReply, FastifyRequest } from "fastify";
 import z from "zod";
@@ -16,9 +17,12 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
         const usersRepository = new PrismaUsersRepository()
         const registerUseCase = new RegisterUseCase(usersRepository)
         await registerUseCase.execute({ name, email, password })
-    } catch (err) {
-        console.log(err)
-        return reply.status(409).send()
+    } catch (error) {
+        console.log(error)
+        if(error instanceof EmailAlreadyRegisteredError) {
+            return reply.status(409).send({ message: error.message })
+        }
+        return reply.status(500).send()
     }
 
     return reply.status(201).send()

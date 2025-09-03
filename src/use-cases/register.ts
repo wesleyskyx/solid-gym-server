@@ -1,6 +1,6 @@
-import { prisma } from "@/lib/prisma";
 import { UsersRepository } from "@/repositories/users-repository";
 import { hash } from "bcryptjs";
+import { EmailAlreadyRegisteredError } from "./errors/email-already-registered-error";
 
 interface RegisterUseCaseRequest {
     name: string
@@ -19,7 +19,7 @@ export class RegisterUseCase {
         const emailAlreadyRegistered = await this.usersRepository.findByEmail(email)
 
         if(emailAlreadyRegistered) {
-            throw new Error("Email already registered!")
+            throw new EmailAlreadyRegisteredError()
         }
 
         const password_hash = await hash(password, 6)
